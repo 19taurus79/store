@@ -34,3 +34,17 @@ export function renderProducts(products) {
 
   refs.productsList.insertAdjacentHTML('beforeend', markup);
 }
+
+export function renderProductById(product){
+const markup = `<img class="modal-product__img" src="${product.images[0]}" alt="" />
+      <div class="modal-product__content">
+        <p class="modal-product__title">${product.title}</p>
+        <ul class="modal-product__tags">${product.tags.map(tag => `<li class="modal-product__tag">${tag}</li>`).join('')}</ul>
+        <p class="modal-product__description">${product.description}</p>
+        <p class="modal-product__shipping-information">Shipping: ${product.shippingInformation}</p>
+        <p class="modal-product__return-policy">Return Policy: ${product.returnPolicy}</p>
+        <p class="modal-product__price">Price: ${product.price} $</p>
+        <button class="modal-product__buy-btn" type="button">Buy</button>
+      </div>`
+refs.modalProduct.innerHTML = markup;
+}

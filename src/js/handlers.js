@@ -1,6 +1,7 @@
 // Функції, які передаються колбеками в addEventListners
-import { getCategories, getProducts, getProductsByCategory } from './products-api';
-import { renderCategories, renderProducts } from './render-function';
+import { getCategories, getProductById, getProducts, getProductsByCategory } from './products-api';
+import { refs } from './refs';
+import { renderCategories, renderProductById, renderProducts } from './render-function';
 
 // Функція викликається при завантаженні сторінки
 export async function onDOMContentLoaded() {
@@ -47,5 +48,40 @@ export async function onCategoryClick(event) {
     renderProducts(products);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function onProductClick(event) {
+// console.log(event.target.closest('.products__item').classList.contains('products__item'));
+// console.log(event.target.closest('.products__item').classList.contains('products__item'));
+  if (!event.target.closest('.products__item')) {
+    return;
+  }console.log(event.target.closest('.products__item'));
+
+console.log(event.target.closest('.products__item'));
+  const productId = event.target.closest('.products__item').dataset.id;
+  const product = await getProductById(productId);
+  refs.modal.classList.add('modal--is-open');
+  renderProductById(product);
+
+  // Добавляем слушатель для клавиши Escape
+  document.addEventListener('keydown', onEscKeyPress);
+}
+
+export function onModalCloseBtnClick() {
+  refs.modal.classList.remove('modal--is-open');
+
+  // Удаляем слушатель для клавиши Escape
+  document.removeEventListener('keydown', onEscKeyPress);
+}
+
+export function onOverlayClick(event) {
+  if (event.target === event.currentTarget) {
+    refs.modal.classList.remove('modal--is-open');
+  }
+}
+export function onEscKeyPress(event) {
+  if (event.code === 'Escape') {
+    refs.modal.classList.remove('modal--is-open');
   }
 }
