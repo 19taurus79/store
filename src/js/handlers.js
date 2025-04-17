@@ -1,7 +1,9 @@
 // Функції, які передаються колбеками в addEventListners
-import { getCategories, getProductById, getProducts, getProductsByCategory } from './products-api';
+import iziToast from 'izitoast';
+import { getCategories, getProductById, getProducts, getProductsByCategory, getProductsByQuery } from './products-api';
 import { refs } from './refs';
-import { renderCategories, renderProductById, renderProducts } from './render-function';
+import { clearProductsList, renderCategories, renderProductById, renderProducts } from './render-function';
+import 'izitoast/dist/css/iziToast.min.css';
 
 // Функція викликається при завантаженні сторінки
 export async function onDOMContentLoaded() {
@@ -85,3 +87,40 @@ export function onEscKeyPress(event) {
     refs.modal.classList.remove('modal--is-open');
   }
 }
+
+export async function onSearchFormSubmit(event) {
+  event.preventDefault();
+  console.log(event.target.elements.searchValue.value);
+  const searchValue = event.target.elements.searchValue.value.trim();
+  if (searchValue === '') {
+    iziToast.warning({
+      title: 'Warning',
+      message: 'Please enter a search query',
+      position: 'topRight',
+      timeout: 3000,
+      
+    });
+    console.log('Please enter a search query');
+    
+    return;
+  }
+  const { products } = await getProductsByQuery(searchValue);
+  console.log(products);
+  if (products.length === 0) {
+    clearProductsList();
+    refs.notFound.classList.add('not-found--visible');
+    return;
+  };
+  clearProductsList();
+  renderProducts(products);
+}
+
+export async function onSearchFormBtnClearClick() {
+  refs.searchForm.elements.searchValue.value = '';
+  if (refs.notFound.classList.contains('not-found--visible')) {
+    refs.notFound.classList.remove('not-found--visible');
+  }
+  clearProductsList();
+  const products  = await getProducts();
+  renderProducts(products.products);
+};

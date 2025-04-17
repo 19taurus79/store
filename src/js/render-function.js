@@ -48,3 +48,6 @@ const markup = `<img class="modal-product__img" src="${product.images[0]}" alt="
       </div>`
 refs.modalProduct.innerHTML = markup;
 }
+export function clearProductsList() {
+  refs.productsList.innerHTML = '';
+}
