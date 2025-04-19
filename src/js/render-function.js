@@ -36,6 +36,7 @@ export function renderProducts(products) {
 }
 
 export function renderProductById(product){
+  refs.modalProduct.id = product.id;
 const markup = `<img class="modal-product__img" src="${product.images[0]}" alt="" />
       <div class="modal-product__content">
         <p class="modal-product__title">${product.title}</p>
@@ -47,6 +48,8 @@ const markup = `<img class="modal-product__img" src="${product.images[0]}" alt="
         <button class="modal-product__buy-btn" type="button">Buy</button>
       </div>`
 refs.modalProduct.innerHTML = markup;
+console.log(product);
+
 }
 export function clearProductsList() {
   refs.productsList.innerHTML = '';

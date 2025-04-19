@@ -1,4 +1,4 @@
-import { onCategoryClick, onDOMContentLoaded, onEscKeyPress, onModalCloseBtnClick, onOverlayClick, onProductClick, onSearchFormBtnClearClick, onSearchFormSubmit } from './js/handlers';
+import { onAddToCartBtnClick, onAddToWishlistBtnClick, onCategoryClick, onDOMContentLoaded, onEscKeyPress, onModalCloseBtnClick, onOverlayClick, onProductClick, onSearchFormBtnClearClick, onSearchFormSubmit } from './js/handlers';
 import { refs } from './js/refs';
 
 //Логіка сторінки Home
@@ -10,3 +10,5 @@ refs.modalCloseBtn.addEventListener('click', onModalCloseBtnClick);
 refs.modal.addEventListener('click', onOverlayClick);
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
 refs.searchFormBtnClear.addEventListener('click', onSearchFormBtnClearClick);
+refs.addToCartBtn.addEventListener('click', onAddToCartBtnClick);
+refs.addToWishlistBtn.addEventListener('click', onAddToWishlistBtnClick);

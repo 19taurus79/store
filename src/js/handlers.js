@@ -4,6 +4,7 @@ import { getCategories, getProductById, getProducts, getProductsByCategory, getP
 import { refs } from './refs';
 import { clearProductsList, renderCategories, renderProductById, renderProducts } from './render-function';
 import 'izitoast/dist/css/iziToast.min.css';
+import { getFromStorage, removeFromStorage, saveToStorage } from './storage';
 
 // Функція викликається при завантаженні сторінки
 export async function onDOMContentLoaded() {
@@ -15,6 +16,19 @@ export async function onDOMContentLoaded() {
     renderProducts(products);
   } catch (error) {
     console.log(error);
+  }
+  const cart = getFromStorage('cart');
+  if (cart) {
+    refs.cartCount.textContent = cart.length;
+  } else {
+    refs.cartCount.textContent = 0;
+  }
+  const wishlist = getFromStorage('wishlist');
+  if (wishlist) {
+    refs.wishlistCount.textContent = wishlist.length;
+  }
+  else {
+    refs.wishlistCount.textContent = 0;
   }
 }
 // Функція викликається при кліку на категорію
@@ -62,6 +76,19 @@ export async function onProductClick(event) {
 
 console.log(event.target.closest('.products__item'));
   const productId = event.target.closest('.products__item').dataset.id;
+  const productInCart = await getFromStorage('cart')
+  const productInWishlist = await getFromStorage('wishlist')
+  console.log(productInCart);
+  if (productInCart && productInCart.includes(productId)) {
+    refs.addToCartBtn.textContent = 'Remove from cart';
+  } else {
+    refs.addToCartBtn.textContent = 'Add to cart';
+  }
+  if (productInWishlist && productInWishlist.includes(productId)) {
+    refs.addToWishlistBtn.textContent = 'Remove from Wishlist';
+  } else {
+    refs.addToWishlistBtn.textContent = 'Add to Wishlist';
+  }
   const product = await getProductById(productId);
   refs.modal.classList.add('modal--is-open');
   renderProductById(product);
@@ -123,4 +150,48 @@ export async function onSearchFormBtnClearClick() {
   clearProductsList();
   const products  = await getProducts();
   renderProducts(products.products);
+};
+
+export function onAddToCartBtnClick(event) {
+  console.log('add to cart');
+  console.log(event.target);
+  const productId = event.target.closest('.modal__content').querySelector('.modal-product').id;
+  if (event.target.textContent === 'Remove from cart') {
+    removeFromStorage('cart', productId);
+    event.target.textContent='Add to cart';
+    const cart = getFromStorage('cart');
+    if (cart.length === 0) {
+      refs.cartCount.textContent = 0;
+    } else {
+      refs.cartCount.textContent = cart.length;
+    }
+
+  }else{
+  saveToStorage('cart', productId);
+  event.target.textContent='Remove from cart';}
+  const cart = getFromStorage('cart');
+  refs.cartCount.textContent = cart.length;
+  
+};
+
+export function onAddToWishlistBtnClick(event) {
+  console.log('add to wishlist');
+  console.log(event.target);
+  const productId = event.target.closest('.modal__content').querySelector('.modal-product').id;
+  if (event.target.textContent === 'Remove from Wishlist') {
+    removeFromStorage('wishlist', productId);
+    event.target.textContent='Add to Wishlist';
+    const wishlist = getFromStorage('wishlist');
+    if (wishlist.length === 0) {
+      refs.wishlistCount.textContent = 0;
+    }
+    else {
+      refs.wishlistCount.textContent = wishlist.length;
+    }
+    
+  }else{
+  saveToStorage('wishlist', productId);
+  event.target.textContent='Remove from Wishlist';}
+  const wishlist = getFromStorage('wishlist');
+  refs.wishlistCount.textContent = wishlist.length;
 };
