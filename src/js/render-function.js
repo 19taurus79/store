@@ -1,5 +1,7 @@
 //Функцію для створення, рендеру або видалення розмітки
+import { getProductById } from './products-api';
 import { refs } from './refs';
+import { getFromStorage } from './storage';
 
 
 export function renderCategories(categories) {
@@ -53,4 +55,17 @@ console.log(product);
 }
 export function clearProductsList() {
   refs.productsList.innerHTML = '';
+}
+
+export async function renderAsideCart() {
+  const cart = getFromStorage('cart');
+  if (cart) {
+    refs.cartCount.textContent = cart.length;
+    refs.cartSummaryItem.textContent = cart.length;
+    const products = await Promise.all(cart.map(id => getProductById(id)));
+    const totalPrice = products.reduce((acc, product) => acc + product.price, 0).toFixed(2); // Округляем до 2 знаков
+    refs.cartSummaryPrice.textContent = totalPrice;
+  } else {
+    refs.cartCount.textContent = 0;
+  }
 }

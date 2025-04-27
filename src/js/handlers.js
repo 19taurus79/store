@@ -2,7 +2,7 @@
 import iziToast from 'izitoast';
 import { getCategories, getProductById, getProducts, getProductsByCategory, getProductsByQuery } from './products-api';
 import { refs } from './refs';
-import { clearProductsList, renderCategories, renderProductById, renderProducts } from './render-function';
+import { clearProductsList, renderAsideCart, renderCategories, renderProductById, renderProducts } from './render-function';
 import 'izitoast/dist/css/iziToast.min.css';
 import { getFromStorage, removeFromStorage, saveToStorage } from './storage';
 
@@ -153,13 +153,33 @@ export async function onSearchFormBtnClearClick() {
 };
 
 export function onAddToCartBtnClick(event) {
-  console.log('add to cart');
-  console.log(event.target);
+  // console.log('add to cart');
+  // console.log(event.target);
   const productId = event.target.closest('.modal__content').querySelector('.modal-product').id;
   if (event.target.textContent === 'Remove from cart') {
     removeFromStorage('cart', productId);
     event.target.textContent='Add to cart';
     const cart = getFromStorage('cart');
+    if (window.location.pathname === '/cart.html') {
+      // const products = getFromStorage('cart');
+      // console.log(products);
+      console.log('cart lenght',cart.length);
+      
+      if (cart.length === 0) {
+        refs.productsList.innerHTML = '<p>Cart is empty</p>';
+      } else {
+        const products= cart.map(async (id) => {
+          const product = await getProductById(id);
+          return product;
+        });
+        Promise.all(products).then((products) => {
+          clearProductsList();
+          renderProducts(products);
+          renderAsideCart();
+        });
+      }
+    }
+  
     if (cart.length === 0) {
       refs.cartCount.textContent = 0;
     } else {
@@ -175,13 +195,31 @@ export function onAddToCartBtnClick(event) {
 };
 
 export function onAddToWishlistBtnClick(event) {
-  console.log('add to wishlist');
-  console.log(event.target);
+  // console.log('add to wishlist');
+  // console.log(event.target);
   const productId = event.target.closest('.modal__content').querySelector('.modal-product').id;
   if (event.target.textContent === 'Remove from Wishlist') {
     removeFromStorage('wishlist', productId);
     event.target.textContent='Add to Wishlist';
     const wishlist = getFromStorage('wishlist');
+    if (window.location.pathname === '/wishlist.html') {
+      // const products = getFromStorage('wishlist');
+      // console.log(products);
+      console.log('wishlist lenght',wishlist.length);
+      
+      if (wishlist.length === 0) {
+        refs.productsList.innerHTML = '<p>Wishlist is empty</p>';
+      } else {
+        const products= wishlist.map(async (id) => {
+          const product = await getProductById(id);
+          return product;
+        });
+        Promise.all(products).then((products) => {
+          clearProductsList();
+          renderProducts(products);
+        });
+      }
+    }
     if (wishlist.length === 0) {
       refs.wishlistCount.textContent = 0;
     }
