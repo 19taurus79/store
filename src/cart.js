@@ -1,8 +1,10 @@
 //Логіка сторінки Cart
+import 'izitoast/dist/css/iziToast.min.css';
+import iziToast from "izitoast";
 import { onAddToCartBtnClick, onAddToWishlistBtnClick, onModalCloseBtnClick, onOverlayClick, onProductClick, onSearchFormBtnClearClick, onSearchFormSubmit } from "./js/handlers";
 import { getProductById } from "./js/products-api";
 import { refs } from "./js/refs";
-import { renderAsideCart, renderProductById, renderProducts } from "./js/render-function";
+import { clearProductsList, renderAsideCart, renderProductById, renderProducts } from "./js/render-function";
 import { getFromStorage } from "./js/storage";
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded);
@@ -13,6 +15,7 @@ refs.searchForm.addEventListener('submit', onSearchFormSubmit);
 refs.searchFormBtnClear.addEventListener('click', onSearchFormBtnClearClick);
 refs.addToCartBtn.addEventListener('click', onAddToCartBtnClick);
 refs.addToWishlistBtn.addEventListener('click', onAddToWishlistBtnClick);
+refs.cartSummaryBtn.addEventListener('click', onCartSummaryBtnClick);
 
 export async function onDOMContentLoaded() {
   
@@ -57,4 +60,19 @@ export async function onDOMContentLoaded() {
   } catch (error) {
     console.log(error);
   }
+}
+
+export function onCartSummaryBtnClick(event) {
+    // const cart = getFromStorage('cart');
+    // console.log('summary',cart);
+    localStorage.setItem('cart', JSON.stringify([]));
+    clearProductsList();
+    renderAsideCart();
+    iziToast.success({
+      title: 'Success',
+      message: 'You have successfully purchased all products',
+      position: 'center',
+      class: 'my-custom-toast',
+      
+    });
 }

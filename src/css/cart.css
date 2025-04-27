@@ -93,3 +93,9 @@
   font-size: 0.9rem;
   text-align: center;
 }
+.my-custom-toast {
+  min-height: 150px !important; /* или сколько тебе нужно */
+  display: flex !important;
+  align-items: center !important; /* чтобы текст красиво стоял по центру */
+  font-size: 38px !important; /* можно увеличить шрифт, чтобы заполнить высоту */
+}

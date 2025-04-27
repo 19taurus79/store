@@ -15,4 +15,5 @@ export const refs = {
   wishlistCount: document.querySelector('span[data-wishlist-count]'),
   cartSummaryItem: document.querySelector('span[data-count]'),
   cartSummaryPrice: document.querySelector('span[data-price]'),
+  cartSummaryBtn: document.querySelector('.cart-summary__btn'),
 };
